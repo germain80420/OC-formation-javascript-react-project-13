@@ -1,16 +1,29 @@
-import { configureStore } from '@reduxjs/toolkit'
-import persistedReducer from './reducers/rootReducer'
-import { persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER  } from "redux-persist"
+import { configureStore } from "@reduxjs/toolkit"
+import { persistedReducer, rootReducer } from "./reducers/rootReducer"
+import {
+  persistStore,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist"
 
-
-export const store = configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
-})
-
-export const persistor = persistStore(store)
+const usePersistReducer =
+  JSON.parse(localStorage.getItem("rememberMe")) || false
+let store
+let persistor = null
+try {
+  store = configureStore({
+    reducer: usePersistReducer ? persistedReducer : rootReducer,
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }),
+  })
+  if (usePersistReducer) persistor = persistStore(store)
+} catch (error) {}
+export { store, persistor }
