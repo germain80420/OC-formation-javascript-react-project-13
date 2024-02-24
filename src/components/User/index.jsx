@@ -49,14 +49,12 @@ function User() {
       )
 
       if (response.ok) {
-        const data = await response.json()
         dispatch(updateUserInfos(formData))
         setDisplay(!display)
       } else {
         setErrorMessage("Invalid Fields")
       }
     } catch (error) {
-      console.error("Error updating user info:", error)
       setErrorMessage("Error updating user info")
     }
   }
