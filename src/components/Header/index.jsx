@@ -12,33 +12,37 @@ function Header() {
   const userData = useSelector((state) => state.user.userData)
   const isConnected = useSelector((state) => state.auth.isConnected)
   const [inactiveTime, setInactiveTime] = useState(0)
-
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (isConnected)
-      document.onmousemove = (e) => {
-        setInactiveTime(0)
-      }
-  })
+    const handleMouseMove = () => {
+      setInactiveTime(0)
+    }
+
+    document.addEventListener("mousemove", handleMouseMove)
+
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove)
+    }
+  }, [])
 
   useEffect(() => {
-    const timerDeconnexion = setInterval(() => {
-      if (isConnected)
+    const isRememberMeChecked = JSON.parse(localStorage.getItem("rememberMe"))
+
+    const timerConexion = setInterval(() => {
+      if (isConnected && !isRememberMeChecked) {
         setInactiveTime((prevInactiveTime) => prevInactiveTime + 1)
+        console.log(inactiveTime)
+      }
     }, 1000)
 
     return () => {
       // Nettoyer le timer lors du démontage du composant
-      clearInterval(timerDeconnexion)
+      clearInterval(timerConexion)
     }
-  }, [isConnected]) // Le tableau vide signifie que cet effet ne dépend d'aucune valeur et ne doit s'exécuter qu'une seule fois au montage du composant
+  }, [isConnected, inactiveTime])
 
-  useEffect(() => {
-    console.log(inactiveTime)
-    // Vous pouvez ajouter ici la logique pour déconnecter l'utilisateur après une certaine période d'inactivité
-  }, [inactiveTime])
   useEffect(() => {
     if (inactiveTime > 10) {
       dispatch(sessionTimeOut())
