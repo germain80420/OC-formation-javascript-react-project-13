@@ -3,6 +3,7 @@ const initialState = {
   isConnected: false,
   token: null,
   error: null,
+  isSessionTimeOut: false,
 }
 
 export const authReducer = (state = initialState, action) => {
@@ -27,6 +28,13 @@ export const authReducer = (state = initialState, action) => {
 
     case "LOGOUT": {
       return initialState
+    }
+
+    case "SESSION_TIME_OUT": {
+      return {
+        ...initialState,
+        isSessionTimeOut: true,
+      }
     }
     default:
       return state

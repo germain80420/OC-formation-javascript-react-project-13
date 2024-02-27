@@ -1,0 +1,24 @@
+.main {
+  flex: 1;
+}
+
+.bg-dark {
+  background-color: #12002b;
+}
+
+.infos {
+  border-radius: 20px;
+  background-color: aliceblue;
+  justify-content: center;
+  width: fit-content;
+  padding: 20px;
+  margin: auto;
+  margin-top: 40px;
+  align-items: center;
+}
+.infos button {
+  background-color: red;
+  color: white;
+  border-radius: 20px;
+  padding: 15px;
+}

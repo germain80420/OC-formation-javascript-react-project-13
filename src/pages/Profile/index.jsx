@@ -10,10 +10,7 @@ function Profile() {
   const navigate = useNavigate()
 
   const token = useSelector((state) => state.auth.token)
-  console.log(token)
-  const userData = useSelector((state) => state.user.userData)
   const dispatch = useDispatch()
-  console.log(userData)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,7 +43,6 @@ function Profile() {
           navigate("/")
         }
       } catch (error) {
-        console.error(error)
         navigate("/")
       }
     }

@@ -17,3 +17,9 @@ export const logout = () => {
     type: "LOGOUT",
   }
 }
+
+export const sessionTimeOut = () => {
+  return {
+    type: "SESSION_TIME_OUT",
+  }
+}

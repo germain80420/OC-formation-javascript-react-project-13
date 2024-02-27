@@ -55,7 +55,6 @@ function Form() {
         dispatch(loginFailed(error))
       }
     } catch (error) {
-      console.error(error)
     }
   }
 
