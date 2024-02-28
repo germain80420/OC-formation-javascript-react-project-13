@@ -1,0 +1,311 @@
+swagger: "2.0"
+info:
+  title: Argent Bank API for transactions
+  description: Specify possible API endpoints needed for the transactions
+  version: 1.0.0
+  termsOfService: http://swagger.io/terms/
+host: localhost:3001
+basePath: /api/v1
+schemes:
+  - http
+paths:
+  /user/{idAccount}/transactions:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Transactions module
+      summary: Finds all transactions for the current month
+      description: API for fetching all the transactions of the current month
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: header
+          type: string
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+        - name: idAccount
+          in: path
+          description: Id of the account
+          required: true
+          type: string
+        - name: month
+          in: query
+          description: Month of the transaction (if no value, return the current month)
+          required: false
+          type: number
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+        - name: year
+          in: query
+          description: Year of the transaction (if no value, return the current year)
+          required: false
+          type: number
+      responses:
+        "200":
+          description: transactions of the month successfully loaded
+          schema:
+            $ref: "#/definitions/TransactionsMonthResponse"
+        "400":
+          description: Invalid Fields
+        "401":
+          description: User is not authorized
+        "404":
+          description: Account not found
+        "500":
+          description: Internal Server Error
+
+  /user/{idAccount}/transactions/{idTransaction}:
+    get:
+      security:
+        - BearerAuth: []
+      tags:
+        - Transactions module
+      summary: Get transaction by ID
+      description: API for fetching one transaction details
+      produces:
+        - "application/json"
+      parameters:
+        - in: header
+          type: string
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+        - name: idAccount
+          in: path
+          description: Id of the account
+          required: true
+          type: string
+        - name: idTransaction
+          in: path
+          description: Id of the transaction
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Transaction successfully loaded
+          schema:
+            $ref: "#/definitions/TransactionResponse"
+        "400":
+          description: Invalid Fields
+        "401":
+          description: Access not authorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+    put:
+      security:
+        - BearerAuth: []
+      tags:
+        - Transactions module
+      summary: Update an existing transaction
+      description: API for updating transaction's details
+      produces:
+        - "application/json"
+      parameters:
+        - in: header
+          type: string
+          name: Authorization
+          description: Attach Bearer JWT token
+          required: true
+        - name: idAccount
+          in: path
+          description: Id of the account
+          required: true
+          type: string
+        - name: idTransaction
+          in: path
+          description: Id of the transaction
+          required: true
+          type: string
+        - in: body
+          name: body
+          description: Update transaction attributes
+          required: true
+          schema:
+            $ref: "#/definitions/TransactionDetail"
+      responses:
+        "200":
+          description: Transaction's details successfully modified
+          schema:
+            $ref: "#/definitions/TransactionUpdateResponse"
+        "400":
+          description: Invalid Fields
+        "401":
+          description: Access not authorized
+        "404":
+          description: Transaction not found
+        "500":
+          description: Internal Server Error
+
+securityDefinitions:
+  BearerAuth:
+    type: apiKey
+    name: Authorization
+    in: header
+
+definitions:
+  TransactionsMonthResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        example: 200
+      message:
+        type: string
+        format: string
+        example: Transactions successfully recovered
+      body:
+        type: object
+        properties:
+          transactions:
+            type: array
+            items:
+              $ref: "#/definitions/Transaction"
+        example:
+          - transactionId: 8501542f-f49c-4be7-91aa-d3ba429b5016
+            accountId: fcec1911-478f-4582-8a5e-d476ce947791
+            date: "2023-03-14T01:43:32"
+            description: Golden Sun Bakery
+            amount: 50.00
+            balance: 2187.78
+            type: Electronic
+            category: Food
+            notes: bread and birthay cake
+          - transactionId: c5b615a0-f6ca-45eb-915b-234343462267
+            accountId: fcec1911-478f-4582-8a5e-d476ce947791
+            date: "2023-05-07T11:04:13"
+            description: London Theater
+            amount: 100.00
+            balance: 2087.78
+            type: Electronic
+            category: Entertainement
+            notes: Frozen the musical
+
+  TransactionResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        example: 200
+      message:
+        type: string
+        example: Transaction successfully loaded
+      schema:
+        $ref: "#/definitions/Transaction"
+
+  TransactionUpdateResponse:
+    type: object
+    properties:
+      status:
+        type: integer
+        example: 200
+      message:
+        type: string
+        example: Transaction's details successfully modified
+      schema:
+        $ref: "#/definitions/Transaction"
+
+  Transaction:
+    type: object
+    properties:
+      idTransaction:
+        type: string
+        description: id of the transaction
+        example: b23f998c-c2fa-4945-8544-7635e3b7b721
+      idAccount:
+        type: string
+        description: id of the account
+        example: ae336868-3640-463c-acc6-2c774b6d40d5
+      date:
+        type: string
+        format: datetime
+        description: transaction date
+        example: "2023-07-01T20:23:04"
+      description:
+        type: string
+        description: transaction description
+        example: Golden Sun Bakery
+      amount:
+        type: number
+        format: double
+        description: transaction amount
+        example: 75.00
+      balance:
+        type: number
+        format: double
+        description: account balance after transaction
+        example: 2087.79
+      type:
+        type: string
+        example: Electronic
+        description: transaction type
+      category:
+        type: string
+        description: transaction category
+        example: Transportation
+        enum:
+          - Food
+          - Household Expenses
+          - Transportation
+          - Utilities
+          - Entertainment
+          - Healthcare
+          - Clothing
+          - Education
+          - Travel
+          - Electronics
+          - Personal Care
+          - Gifts
+          - Automotive
+          - Investments
+          - Insurance
+          - Miscellaneous
+      notes:
+        type: string
+        description: transaction notes
+        example: Flight to Orlando
+
+  TransactionDetail:
+    type: object
+    properties:
+      category:
+        type: string
+        description: transaction category
+        example: Travel
+        enum:
+          - Food
+          - Household Expenses
+          - Transportation
+          - Utilities
+          - Entertainment
+          - Healthcare
+          - Clothing
+          - Education
+          - Travel
+          - Electronics
+          - Personal Care
+          - Gifts
+          - Automotive
+          - Investments
+          - Insurance
+          - Miscellaneous
+      notes:
+        type: string
+        description: transaction notes
+        example: Flight for New York
