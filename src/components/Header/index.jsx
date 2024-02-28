@@ -11,6 +11,7 @@ import { useEffect, useState } from "react"
 function Header() {
   const userData = useSelector((state) => state.user.userData)
   const isConnected = useSelector((state) => state.auth.isConnected)
+  const timeBeforeDeconnexion = 15
   const [inactiveTime, setInactiveTime] = useState(0)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -44,7 +45,7 @@ function Header() {
   }, [isConnected, inactiveTime])
 
   useEffect(() => {
-    if (inactiveTime > 10) {
+    if (inactiveTime > timeBeforeDeconnexion) {
       dispatch(sessionTimeOut())
       navigate("/session_time_out")
     }

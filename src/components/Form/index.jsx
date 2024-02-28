@@ -25,8 +25,7 @@ function Form() {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    setEmail(document.getElementById("username").value)
-    setPassword(document.getElementById("password").value)
+
     if (!isValidEmail(email)) {
       setErrorMessage("Invalid email adress")
       return
@@ -51,11 +50,10 @@ function Form() {
         localStorage.setItem("rememberMe", JSON.stringify(rememberMe))
         navigate("/profile")
       } else {
-        const error = "Incorrect email/password"
-        dispatch(loginFailed(error))
+        setErrorMessage("Incorrect email/password")
+        dispatch(loginFailed(errorMessage))
       }
-    } catch (error) {
-    }
+    } catch (error) {}
   }
 
   return (
@@ -86,7 +84,9 @@ function Form() {
             id="remember-me"
             type="checkbox"
             checked={rememberMe}
-            onChange={(event) => setRememberMe(event.target.checked)}
+            onChange={(event) => {
+              setRememberMe(event.target.checked)
+            }}
           />
           <label htmlFor="remember-me">Remember me</label>
         </div>
