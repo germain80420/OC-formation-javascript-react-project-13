@@ -11,3 +11,9 @@ export const updateUserInfos = (userData) => {
     payload: userData,
   }
 }
+
+export const clearUserData = () => {
+  return {
+    type: "CLEAR_USER_DATA",
+  }
+}

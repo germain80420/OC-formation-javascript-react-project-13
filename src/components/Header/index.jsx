@@ -6,12 +6,14 @@ import { faUserCircle, faSignOut } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { useSelector, useDispatch } from "react-redux"
 import { logout, sessionTimeOut } from "../../redux/actions/authActions.jsx"
+import { clearUserData } from "../../redux/actions/userActions.jsx"
+
 import { useEffect, useState } from "react"
 
 function Header() {
   const userData = useSelector((state) => state.user.userData)
   const isConnected = useSelector((state) => state.auth.isConnected)
-  const timeBeforeDeconnexion = 15
+  const timeBeforeDeconnexion = 10
   const [inactiveTime, setInactiveTime] = useState(0)
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -47,12 +49,14 @@ function Header() {
   useEffect(() => {
     if (inactiveTime > timeBeforeDeconnexion) {
       dispatch(sessionTimeOut())
+      dispatch(clearUserData())
       navigate("/session_time_out")
     }
   }, [dispatch, navigate, inactiveTime])
 
   const handleLogout = () => {
     dispatch(logout())
+    dispatch(clearUserData())
 
     navigate("/")
   }

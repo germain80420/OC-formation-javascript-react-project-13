@@ -21,7 +21,7 @@ export const userReducer = (state = initialState, action) => {
           lastname: action.payload.lastName,
         },
       }
-    case "LOGOUT": {
+    case "CLEAR_USER_DATA": {
       return initialState
     }
     default:
